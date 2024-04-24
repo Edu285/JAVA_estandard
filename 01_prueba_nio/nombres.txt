@@ -1,0 +1,6 @@
+cadena1
+cadena2
+cadena3
+cadena1
+cadena2
+cadena3
