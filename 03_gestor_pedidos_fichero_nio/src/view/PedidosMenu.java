@@ -3,6 +3,7 @@ package view;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import model.Pedido;
@@ -30,25 +31,37 @@ public class PedidosMenu {
 						pedidosEntreFechas();
 						break;
 					case 4:
+						eliminarUnPedido();
+						break;
+					case 5:
+						listarPedidos();
+						break;
+					case 6:
+						service.borrarPedidos();
+						break;
+					case 7:
 						System.out.println("Adios!");
 						break;
-					
 					default:
 						System.out.println("Opción no válida!");
+						break;
 				}
 			}//end try
 			catch(NumberFormatException ex) {
 				System.out.println("Debe ser un valor numérico!!");
 			}
-		}while(opcion!=4);
+		}while(opcion!=7);
 	}
 	static void presentarMenu() {
 		System.out.println("""
 				1.- Agregar Pedido
 				2.- Pedido más reciente
 				3.- Pedidos entre fechas
-				4.- Salir
-				
+				4.- Eliminar un Pedido
+				5.- Listar Pedidos
+				6.- Borrar archivo de Pedidos
+				7.- Salir
+				Introduce una opcion:
 				""");
 	}
 	static void agregarPedido()  {
@@ -77,12 +90,28 @@ public class PedidosMenu {
 		LocalDate fecha1=LocalDate.parse(sc.nextLine(),sdf);	
 		System.out.println("Fecha límite (dia/mes/año):");
 		LocalDate fecha2=LocalDate.parse(sc.nextLine(),sdf);	
-		ArrayList<Pedido> pedidosEncontrados=service.pedidosEntreFechas(fecha1, fecha2);
+		List<Pedido> pedidosEncontrados= service.pedidosEntreFechas(fecha1, fecha2);
 		for(Pedido p:pedidosEncontrados) {
 			System.out.print("Producto: "+p.getProducto()+" ");
 			System.out.print("Unidades: "+p.getUnidades()+" ");
 			System.out.println("Fecha pedido: "+p.getFechaPedido().format(sdf)+" ");
 		}
 	}
-
+	
+	static void eliminarUnPedido() {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("Producto:");
+		String producto=sc.nextLine();
+		service.eliminarPedido(producto);
+	}
+	
+	static void listarPedidos() {
+		DateTimeFormatter sdf=DateTimeFormatter.ofPattern("dd/MM/yyyy");	
+		List<Pedido> pedidosEncontrados= service.pedidos();
+		for(Pedido p:pedidosEncontrados) {
+			System.out.print("Producto: "+p.getProducto()+" ");
+			System.out.print("Unidades: "+p.getUnidades()+" ");
+			System.out.println("Fecha pedido: "+p.getFechaPedido().format(sdf)+" ");
+		}
+	}
 }
